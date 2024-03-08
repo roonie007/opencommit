@@ -25,6 +25,7 @@ export enum CONFIG_KEYS {
   OCO_MESSAGE_TEMPLATE_PLACEHOLDER = 'OCO_MESSAGE_TEMPLATE_PLACEHOLDER',
   OCO_PROMPT_MODULE = 'OCO_PROMPT_MODULE',
   OCO_AI_PROVIDER = 'OCO_AI_PROVIDER',
+  OCO_ONE_LINE_COMMIT = 'OCO_ONE_LINE_COMMIT'
 }
 
 export enum CONFIG_MODES {
@@ -153,7 +154,8 @@ export const configValidators = {
         'gpt-4',
         'gpt-3.5-turbo-16k',
         'gpt-3.5-turbo-0613',
-        'gpt-4-1106-preview'
+        'gpt-4-1106-preview',
+        'gpt-4-0125-preview'
       ].includes(value),
       `${value} is not supported yet, use 'gpt-4', 'gpt-3.5-turbo-16k' (default), 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo' or 'gpt-4-1106-preview'`
     );
@@ -190,6 +192,16 @@ export const configValidators = {
     );
     return value;
   },
+
+  [CONFIG_KEYS.OCO_ONE_LINE_COMMIT](value: any) {
+    validateConfig(
+      CONFIG_KEYS.OCO_ONE_LINE_COMMIT,
+      typeof value === 'boolean',
+      'Must be true or false'
+    );
+
+    return value;
+  },
 };
 
 export type ConfigType = {
@@ -215,7 +227,8 @@ export const getConfig = (): ConfigType | null => {
     OCO_MESSAGE_TEMPLATE_PLACEHOLDER:
       process.env.OCO_MESSAGE_TEMPLATE_PLACEHOLDER || '$msg',
     OCO_PROMPT_MODULE: process.env.OCO_PROMPT_MODULE || 'conventional-commit',
-    OCO_AI_PROVIDER: process.env.OCO_AI_PROVIDER || 'openai'
+    OCO_AI_PROVIDER: process.env.OCO_AI_PROVIDER || 'openai',
+    OCO_ONE_LINE_COMMIT: process.env.OCO_ONE_LINE_COMMIT === 'true' ? true : false
   };
 
   const configExists = existsSync(configPath);
